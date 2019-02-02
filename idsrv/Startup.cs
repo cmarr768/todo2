@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace idsrv {
@@ -15,8 +10,19 @@ namespace idsrv {
             // configure identity server with in-memory stores, keys, clients and resources
             services.AddIdentityServer ()
                 .AddDeveloperSigningCredential ()
-                .AddInMemoryApiResources (Config.GetApiResources ())
-                .AddInMemoryClients (Config.GetClients ());
+                .AddInMemoryIdentityResources (Config.GetIdentityResources ())
+                .AddInMemoryApiResources (Config.GetApis ())
+                .AddInMemoryClients (Config.GetClients ())
+                .AddTestUsers (Config.GetUsers ());
+
+            services.AddCors (options => {
+                // this defines a CORS policy called "default"
+                options.AddPolicy ("default", policy => {
+                    policy.WithOrigins ("http://localhost:3000")
+                        .AllowAnyHeader ()
+                        .AllowAnyMethod ();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -25,6 +31,7 @@ namespace idsrv {
                 app.UseDeveloperExceptionPage ();
             }
 
+            app.UseCors ("default");
             app.UseIdentityServer ();
         }
     }

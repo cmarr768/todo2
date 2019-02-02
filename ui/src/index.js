@@ -3,17 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import Oidc from 'oidc-client';
 
-const oidcConfig = {
-    authority: "http://localhost:5000",
-    client_id: "js",
-    redirect_uri: "http://localhost:3000/callback.html",
-    response_type: "id_token token",
-    scope:"openid profile api1",
-    post_logout_redirect_uri : "http://localhost:3000/index.html",
-};
-const mgr = new Oidc.UserManager(oidcConfig);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
